@@ -166,6 +166,7 @@ class AppState(rx.State):
     ]
     current_video_index: int = 0
     mobile_sidebar_open: bool = False
+    sidebar_collapsed: bool = False
 
     @rx.var
     def current_video_url(self) -> str:
@@ -174,6 +175,10 @@ class AppState(rx.State):
 
             return random.choice(self.splash_video_urls)
         return ""
+
+    @rx.event
+    def toggle_sidebar(self):
+        self.sidebar_collapsed = not self.sidebar_collapsed
 
     def _load_faqs(self):
         if not self.faq_open_state:
@@ -246,6 +251,7 @@ class AppState(rx.State):
                 ]
         self.is_loaded = True
         self._load_faqs()
+        self.detect_group_opportunities()
         if self.router.page.path == "/":
             return rx.redirect("/home")
 

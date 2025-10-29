@@ -52,5 +52,5 @@ def demo_page() -> rx.Component:
             class_name="flex flex-col w-full min-h-screen",
         ),
         rx.cond(AppState.mobile_sidebar_open, mobile_sidebar(), None),
-        class_name="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]",
+        class_name="flex min-h-screen w-full",
     )

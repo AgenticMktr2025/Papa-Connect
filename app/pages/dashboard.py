@@ -342,42 +342,6 @@ def dashboard_page() -> rx.Component:
             quick_actions(),
             rx.el.div(
                 rx.el.div(
-                    next_event_widget(),
-                    rx.el.div(
-                        rx.el.h2(
-                            "Top Connections",
-                            class_name="text-2xl font-bold text-slate-900 mb-4",
-                        ),
-                        rx.cond(
-                            AppState.top_connections_by_events.length() > 0,
-                            rx.el.div(
-                                rx.foreach(
-                                    AppState.top_connections_by_events,
-                                    top_connection_card,
-                                ),
-                                class_name="flex flex-col gap-4",
-                            ),
-                            rx.el.div(
-                                rx.icon(
-                                    "users",
-                                    class_name="h-8 w-8 text-slate-400 mx-auto mb-2",
-                                ),
-                                rx.el.p(
-                                    "No connections yet.",
-                                    class_name="text-center text-slate-500",
-                                ),
-                                rx.el.a(
-                                    "Add your first contact",
-                                    href="/add-contact",
-                                    class_name="mt-2 text-sm font-semibold text-orange-600 hover:underline",
-                                ),
-                                class_name="text-center flex flex-col items-center p-8 bg-slate-100/50 rounded-lg border border-dashed",
-                            ),
-                        ),
-                    ),
-                    class_name="lg:col-start-3 lg:col-end-4 row-start-1 row-end-3 space-y-8",
-                ),
-                rx.el.div(
                     rx.el.h2(
                         "Upcoming Events",
                         class_name="text-2xl font-bold text-slate-900 mb-4",
@@ -408,19 +372,18 @@ def dashboard_page() -> rx.Component:
                     class_name="lg:col-span-2",
                 ),
                 rx.el.div(
+                    next_event_widget(), class_name="lg:row-start-1 lg:col-start-3"
+                ),
+                rx.el.div(
                     rx.el.h2(
                         "Smart Suggestions",
                         class_name="text-2xl font-bold text-slate-900 mb-4",
-                    ),
-                    rx.el.p(
-                        "Keep your energy where it counts. Here are some ideas:",
-                        class_name="text-slate-500 mb-4",
                     ),
                     rx.cond(
                         AppState.suggestions.length() > 0,
                         rx.el.div(
                             rx.foreach(AppState.suggestions, suggestion_card),
-                            class_name="flex flex-col gap-4",
+                            class_name="grid md:grid-cols-2 gap-4",
                         ),
                         rx.el.div(
                             rx.icon(
@@ -436,7 +399,39 @@ def dashboard_page() -> rx.Component:
                     ),
                     class_name="lg:col-span-2",
                 ),
-                class_name="mt-8 grid grid-cols-1 lg:grid-cols-[repeat(2,minmax(0,1fr))_320px] gap-8 items-start",
+                rx.el.div(
+                    rx.el.h2(
+                        "Top Connections",
+                        class_name="text-2xl font-bold text-slate-900 mb-4",
+                    ),
+                    rx.cond(
+                        AppState.top_connections_by_events.length() > 0,
+                        rx.el.div(
+                            rx.foreach(
+                                AppState.top_connections_by_events, top_connection_card
+                            ),
+                            class_name="flex flex-col gap-4",
+                        ),
+                        rx.el.div(
+                            rx.icon(
+                                "users",
+                                class_name="h-8 w-8 text-slate-400 mx-auto mb-2",
+                            ),
+                            rx.el.p(
+                                "No connections yet.",
+                                class_name="text-center text-slate-500",
+                            ),
+                            rx.el.a(
+                                "Add your first contact",
+                                href="/add-contact",
+                                class_name="mt-2 text-sm font-semibold text-orange-600 hover:underline",
+                            ),
+                            class_name="text-center flex flex-col items-center p-8 bg-slate-100/50 rounded-lg border border-dashed",
+                        ),
+                    ),
+                    class_name="lg:col-start-3 lg:row-start-2",
+                ),
+                class_name="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start",
             ),
             class_name="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8",
         ),
