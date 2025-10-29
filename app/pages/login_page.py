@@ -41,6 +41,15 @@ def splash_page() -> rx.Component:
                     class_name="mt-12 h-40 w-40 rounded-full bg-orange-600 text-white text-2xl font-bold shadow-2xl hover:bg-orange-700 hover:scale-105 transition-all",
                 )
             ),
+            rx.el.p(
+                "Want to see before you sign up? View the ",
+                rx.el.span(
+                    "demo",
+                    on_click=AppState.toggle_demo_mode,
+                    class_name="font-bold underline cursor-pointer hover:text-orange-400",
+                ),
+                class_name="text-slate-400 mt-8",
+            ),
             class_name="relative z-10 flex flex-col items-center text-center",
         ),
         class_name="relative flex items-center justify-center min-h-screen bg-black font-['Poppins'] p-4 overflow-hidden",

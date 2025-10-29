@@ -261,6 +261,8 @@ class AppState(rx.State):
     @rx.event
     def toggle_demo_mode(self):
         self.demo_mode = not self.demo_mode
+        if self.demo_mode:
+            return rx.redirect("/home")
 
     @rx.event
     def toggle_faq(self, index: int):
