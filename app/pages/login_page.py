@@ -1,115 +1,47 @@
 import reflex as rx
+import reflex_clerk_api as clerk
 from app.state.state import AppState
 
 
-def google_signin_button() -> rx.Component:
-    return rx.el.button(
-        rx.icon("mail", class_name="h-5 w-5"),
-        rx.el.span("Sign in with Google", class_name="font-semibold"),
-        on_click=lambda: rx.redirect("/home"),
-        class_name="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-all text-slate-800",
-    )
-
-
-def email_signin_form() -> rx.Component:
-    return rx.el.form(
+def collage_background() -> rx.Component:
+    return rx.el.div(
         rx.el.div(
-            rx.el.label(
-                "Email Address", class_name="text-sm font-medium text-slate-400"
-            ),
-            rx.el.input(
-                placeholder="you@example.com",
-                name="email",
-                type="email",
-                required=True,
-                class_name="w-full mt-1 p-2 bg-slate-700 border border-slate-600 rounded-md focus:ring-2 focus:ring-orange-500 text-white",
-            ),
-            class_name="mb-4",
+            rx.el.image(src="placeholder.svg", class_name="object-cover w-full h-full"),
+            rx.el.image(src="placeholder.svg", class_name="object-cover w-full h-full"),
+            class_name="grid grid-cols-2 w-full h-1/2 gap-2",
         ),
         rx.el.div(
-            rx.el.label("Password", class_name="text-sm font-medium text-slate-400"),
-            rx.el.input(
-                placeholder="********",
-                name="password",
-                type="password",
-                required=True,
-                class_name="w-full mt-1 p-2 bg-slate-700 border border-slate-600 rounded-md focus:ring-2 focus:ring-orange-500 text-white",
-            ),
-            class_name="mb-4",
+            rx.el.image(src="placeholder.svg", class_name="object-cover w-full h-full"),
+            rx.el.image(src="placeholder.svg", class_name="object-cover w-full h-full"),
+            rx.el.image(src="placeholder.svg", class_name="object-cover w-full h-full"),
+            class_name="grid grid-cols-3 w-full h-1/2 gap-2",
         ),
-        rx.cond(
-            AppState.login_error != "",
-            rx.el.p(AppState.login_error, class_name="text-sm text-red-400 mb-4"),
-        ),
-        rx.el.button(
-            "Sign In with Email",
-            type="submit",
-            class_name="w-full bg-slate-900 text-white font-semibold py-3 px-6 rounded-lg hover:bg-slate-950 transition-all",
-        ),
-        on_submit=AppState.login,
+        class_name="absolute inset-0 w-full h-full flex flex-col gap-2 p-2 opacity-30",
     )
 
 
 def splash_page() -> rx.Component:
     return rx.el.div(
-        rx.video(
-            src=AppState.current_video_url,
-            auto_play=True,
-            muted=True,
-            loop=True,
-            class_name="absolute top-0 left-0 w-full h-full object-cover z-0",
-            style={"filter": "brightness(0.4)"},
+        collage_background(),
+        rx.el.div(
+            class_name="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"
         ),
         rx.el.div(
-            class_name="absolute top-0 left-0 w-full h-full bg-slate-900/50 z-10"
-        ),
-        rx.el.div(
-            rx.el.h2(
-                "Welcome to Papa Connect",
-                class_name="text-3xl font-bold text-white text-center mb-2",
+            rx.el.h1(
+                "Papa Connect",
+                class_name="text-6xl font-bold text-white tracking-tighter",
             ),
             rx.el.p(
                 "The app that helps dads actually meet up.",
-                class_name="text-slate-300 text-center mb-8",
+                class_name="text-xl text-slate-300 mt-2 max-w-lg text-center",
             ),
-            google_signin_button(),
-            rx.el.div(
-                rx.el.hr(class_name="w-full border-slate-600"),
-                rx.el.span(
-                    "OR",
-                    class_name="absolute px-3 bg-slate-800 text-sm text-slate-400 font-medium",
-                    style={"left": "50%", "transform": "translateX(-50%)"},
-                ),
-                class_name="relative flex items-center justify-center my-6",
-            ),
-            email_signin_form(),
-            rx.el.p(
-                "Don't have an account? ",
-                rx.el.a(
-                    "Sign up here",
-                    on_click=AppState.toggle_signup,
-                    class_name="font-semibold text-orange-500 hover:underline cursor-pointer",
-                ),
-                class_name="text-center text-sm text-slate-300 mt-6",
-            ),
-            rx.el.div(
-                rx.el.label("Demo Mode", class_name="font-medium text-slate-300"),
+            clerk.sign_in_button(
                 rx.el.button(
-                    rx.el.span(
-                        class_name=rx.cond(
-                            AppState.demo_mode, "translate-x-5", "translate-x-0"
-                        )
-                        + " pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition-transform duration-200 ease-in-out"
-                    ),
-                    on_click=AppState.toggle_demo_mode,
-                    class_name=rx.cond(
-                        AppState.demo_mode, "bg-orange-600", "bg-slate-600"
-                    )
-                    + " relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-800",
-                ),
-                class_name="flex items-center justify-between mt-6 pt-6 border-t border-slate-700",
+                    "Connect",
+                    class_name="mt-12 h-40 w-40 rounded-full bg-orange-600 text-white text-2xl font-bold shadow-2xl hover:bg-orange-700 hover:scale-105 transition-all",
+                )
             ),
-            class_name="relative z-20 w-full max-w-sm p-8 bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-slate-700",
+            class_name="relative z-10 flex flex-col items-center text-center",
         ),
-        class_name="relative flex items-center justify-center min-h-screen bg-slate-900 font-['Poppins'] p-4 overflow-hidden",
+        class_name="relative flex items-center justify-center min-h-screen bg-black font-['Poppins'] p-4 overflow-hidden",
     )

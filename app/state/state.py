@@ -145,8 +145,8 @@ class AppState(rx.State):
     qr_code_url: str = ""
     is_scanning_qr: bool = False
     is_loaded: bool = False
-    is_authenticated: bool = rx.LocalStorage(False, name="is_authenticated")
-    token: str = rx.LocalStorage("", name="token")
+    is_authenticated: bool = False
+    token: str = ""
     selfie_features: dict[str, str] = {}
     capture_selfie_mode: bool = False
     is_processing_selfie: bool = False
@@ -181,7 +181,7 @@ class AppState(rx.State):
     @rx.event
     async def on_load(self):
         """Check auth and load data."""
-        from app.auth import verify_token
+        import reflex_clerk_api as clerk
         from app.database import get_db, init_db
         from app.models.db_models import (
             User,
@@ -190,18 +190,13 @@ class AppState(rx.State):
         )
 
         init_db()
-        if not self.token:
+        clerk_user_state = await self.get_state(clerk.ClerkUserState)
+        if not clerk_user_state.user_id:
             self.is_authenticated = False
             self.is_loaded = True
             self._load_faqs()
             return
-        user_id = verify_token(self.token)
-        if not user_id:
-            self.is_authenticated = False
-            self.is_loaded = True
-            self.token = ""
-            self._load_faqs()
-            return
+        user_id = clerk_user_state.user_id
         self.is_authenticated = True
         with get_db() as db:
             db_user = db.query(User).filter(User.id == user_id).first()
@@ -256,22 +251,7 @@ class AppState(rx.State):
     @rx.event
     async def login(self, form_data: dict):
         """Login the user."""
-        from app.auth import verify_password, create_access_token
-        from app.database import get_db
-        from app.models.db_models import User
-
-        self.login_error = ""
-        if self.demo_mode:
-            self.is_authenticated = True
-            return rx.redirect("/home")
-        with get_db() as db:
-            user = db.query(User).filter(User.email == form_data["email"]).first()
-        if not user or not verify_password(form_data["password"], user.password_hash):
-            self.login_error = "Incorrect email or password"
-            return
-        self.token = create_access_token(user_id=user.id)
-        self.is_authenticated = True
-        return AppState.on_load
+        self.login_error = "Login is handled by Clerk."
 
     @rx.event
     def toggle_signup(self):
@@ -294,12 +274,7 @@ class AppState(rx.State):
 
     @rx.event
     def logout(self):
-        self.is_authenticated = False
-        self.token = ""
-        self.user = UserProfile(
-            id=0, name="", email="", status="active", avatar_seed=""
-        )
-        return rx.redirect("/")
+        return clerk.sign_out()
 
     @rx.event
     def update_profile(self, form_data: dict):

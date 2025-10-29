@@ -1,5 +1,6 @@
 import reflex as rx
-import reflex as rx
+import reflex_clerk_api as clerk
+import os
 from app.state.state import AppState
 from app.pages.dashboard import dashboard_page
 from app.pages.onboarding import onboarding_page
@@ -16,19 +17,21 @@ from app.pages.login_page import splash_page
 
 
 def index() -> rx.Component:
-    return rx.cond(
-        AppState.is_loaded,
-        rx.cond(
-            AppState.is_authenticated,
+    return rx.el.div(
+        clerk.clerk_loading(
             rx.el.div(
-                dashboard_page(),
-                class_name="min-h-screen w-full bg-cool-gray-50 font-['Poppins']",
-            ),
-            splash_page(),
+                rx.spinner(class_name="h-12 w-12 text-orange-500"),
+                class_name="flex items-center justify-center min-h-screen",
+            )
         ),
-        rx.el.div(
-            rx.spinner(class_name="h-12 w-12 text-orange-500"),
-            class_name="flex items-center justify-center min-h-screen",
+        clerk.clerk_loaded(
+            clerk.signed_out(splash_page()),
+            clerk.signed_in(
+                rx.el.div(
+                    dashboard_page(),
+                    class_name="min-h-screen w-full bg-cool-gray-50 font-['Poppins']",
+                )
+            ),
         ),
     )
 
@@ -57,6 +60,14 @@ app = rx.App(
             rel="stylesheet",
         ),
     ],
+)
+clerk.wrap_app(
+    app,
+    publishable_key=os.environ.get("CLERK_PUBLISHABLE_KEY"),
+    secret_key=os.environ.get("CLERK_SECRET_KEY"),
+    register_user_state=True,
+    api_url="https://api.clerk.com",
+    jwks_url="https://relaxed-serval-58.clerk.accounts.dev/.well-known/jwks.json",
 )
 app.add_page(index, on_load=AppState.on_load)
 app.add_page(home, route="/home", on_load=AppState.on_load)
