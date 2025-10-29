@@ -91,7 +91,24 @@ class AppState(rx.State):
         longest_relationship_days=342,
         revived_connections=2,
     )
-    suggestions: list[Suggestion] = []
+    suggestions: list[Suggestion] = [
+        Suggestion(
+            id=1,
+            icon="zap",
+            title="Reconnect with Ben Carter",
+            description="It's been a while. A quick message could restart the timer.",
+            type="individual",
+            involved_connections=[3],
+        ),
+        Suggestion(
+            id=2,
+            icon="users",
+            title="Group Hangout Opportunity",
+            description="Tom, Raj, and Mike haven't met. Great for a group BBQ!",
+            type="group",
+            involved_connections=[1, 2, 5],
+        ),
+    ]
     group_event_opportunities: list[dict] = []
     nav_items: list[dict[str, str]] = [
         {"label": "Home", "icon": "layout-dashboard", "path": "/home"},

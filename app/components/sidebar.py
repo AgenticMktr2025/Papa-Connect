@@ -53,7 +53,6 @@ def sidebar() -> rx.Component:
             ),
             rx.el.div(
                 rx.el.div(
-                    status_indicator(AppState.user.status),
                     rx.el.a(
                         rx.icon("log-out", class_name="h-5 w-5"),
                         rx.cond(AppState.sidebar_collapsed, None, rx.el.span("Logout")),
