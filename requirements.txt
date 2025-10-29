@@ -3,3 +3,9 @@ reflex==0.8.15a1
 qrcode[pil]
 notion-client
 replicate
+sqlalchemy
+alembic
+bcrypt
+python-jose
+passlib
+psycopg2-binary

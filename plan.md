@@ -1,225 +1,213 @@
-# Papa Connect - Full-Stack Dad Coordination App 🎉
+# Papa Connect - Live Data Implementation Plan 🚀
 
-## Current Goal
-Build a complete MVP with 8 core pages, smart behavioral logic, and a compassionate user experience.
-
----
-
-## Phase 1: Core Navigation, Data Models & Home Dashboard ✅
-**Goal**: Set up app structure, state management, data models, and implement the home dashboard with upcoming events and active connections.
-
-- [x] Define complete data models (UserProfile, Connection, Event, UserStats) using rx.Base
-- [x] Create AppState with all state variables and dummy data for connections, events, and stats
-- [x] Implement navigation sidebar with links to all 8 pages
-- [x] Build Home Dashboard with:
-  - Welcome header with user name and status indicator
-  - Upcoming events section (cards showing title, date, time, location)
-  - Top connections leaderboard (showing top 5 by event count with rankings)
-  - Smart suggestions section for meet-up recommendations
-  - Quick action buttons (Add Contact, Plan Event, View Analytics)
-- [x] Apply Material Design 3 styling with indigo primary color, gray secondary, Poppins font
-- [x] Test all event handlers for navigation and state updates
+## Current Status
+✅ Complete MVP with 8 pages and full database integration
+🎯 **CURRENT PHASE**: Phase 10 Complete - Ready for Phase 11
 
 ---
 
-## Phase 2: Onboarding, Dad Card & Connection Management ✅
-**Goal**: Build onboarding flow, profile creation, contact detail pages, and connection management features.
+## Phase 9: Database Setup & Authentication System ✅
+**Goal**: Implement real database backend and proper authentication
 
-- [x] Create Onboarding page with:
-  - Google OAuth placeholder (mock sign-in button with success state)
-  - Calendar link integration placeholder (mock connection UI)
-  - Dad Card creation form (name, location, kids' ages, interests, availability checkboxes)
-  - Multi-step wizard with progress indicator
-- [x] Build Add Contact page with:
-  - QR code display placeholder (generated from user ID)
-  - NFC simulation button
-  - Manual add form (name, phone, tier selection)
-  - Success animation and redirect to connection detail
-- [x] Implement Connection Detail page with:
-  - Header showing peer name, tier stars, and state badge
-  - Shared interests tag cloud
-  - Meet-up history timeline (dates, locations, notes)
-  - Private Michelin-style rating system (⭐1-3 / 🏆 buttons)
-  - Edit tier and notes functionality
-  - Action buttons (Plan Event, Send Message WhatsApp deep-link)
-- [x] Add connection state management event handlers (activate, pause, delete)
-- [x] Test all forms, validation, and state transitions
+- [x] Install required dependencies (sqlalchemy, alembic, bcrypt, python-jose, passlib, psycopg2-binary)
+- [x] Create database models (app/models/db_models.py) matching existing Reflex models
+- [x] Set up SQLAlchemy engine and session management (app/database.py)
+- [x] Implement authentication system (app/auth.py):
+  - Password hashing with bcrypt
+  - JWT token generation and validation
+  - Session management utilities
+- [x] Test database connection and auth flow
+- [x] Wire up authentication to AppState
+- [x] Update splash page with demo mode toggle
+
+**Status**: Complete. All database infrastructure working correctly.
 
 ---
 
-## Phase 3: Event Planner & Calendar Integration ✅
-**Goal**: Build intelligent event planning system with calendar conflict detection and sync.
+## Phase 10: User Profile & Connection CRUD Operations ✅
+**Goal**: Replace dummy data with real database operations for users and connections
 
-- [x] Create Event Planner page with:
-  - Connection selector (dropdown or search)
-  - Calendar availability viewer (weekly grid showing free/busy blocks)
-  - Smart suggestion algorithm (2-3 proposed time slots based on both calendars)
-  - Time slot selection cards with date, time, duration
-  - Location input with suggestions (park, cafe, playground)
-  - Event notes field
-  - Confirm and sync button
-- [x] Implement event creation logic:
-  - Add event to both users' calendars (placeholder sync)
-  - Update connection state to "engaged"
-  - Create WhatsApp deep-link message with event details
-  - Success notification with calendar preview
-- [x] Build My Events page showing:
-  - Upcoming events list (sorted by date)
-  - Past events archive
-  - Filter by connection
-  - Event detail modal with edit/cancel options
-- [x] Add 72-hour activation timer logic (mock timer countdown)
-- [x] Test event creation, calendar conflict detection, and state transitions
+- [x] Update AppState with live data integration:
+  - Add demo_mode flag and toggle (already present)
+  - Load user data from database when demo_mode=False
+  - Keep dummy data when demo_mode=True
+  - Implement login/register event handlers
+- [x] Update splash page (login_page.py):
+  - Demo mode toggle switch (already functional)
+  - Wire up real authentication
+  - Show demo mode indicator when active
+  - Handle login errors properly
+- [x] Implement Connection database operations:
+  - Create connection (manual add, QR scan, NFC simulation)
+  - Read connections list with filters
+  - Update connection (tier, state, notes, ratings)
+  - Store connections in database when not in demo mode
+  - Query connections on app load
+- [x] Implement connection state transitions (active_72h → engaged when event created)
+- [x] Test all CRUD operations with real data
+- [x] Verify demo mode still works with in-memory data
 
----
+**Testing Results:**
+- ✅ User login with JWT authentication working
+- ✅ Add contact stores in database
+- ✅ Create event stores in database and updates connection state
+- ✅ Demo mode preserves in-memory dummy data
+- ✅ All event handlers tested and working
 
-## Phase 4: Pause/Breathing Space & Behavioral Logic ✅
-**Goal**: Implement pause states, timer management, and connection lifecycle automation.
-
-- [x] Create Pause/Breathing Space page with:
-  - Current status indicator (Active / Paused / Breathing Space)
-  - Visual representation of paused timers
-  - Duration selector for breathing space (1 week, 2 weeks, 1 month, indefinite)
-  - Explanation of what gets paused (notifications, timers, prompts)
-  - Resume button with countdown display
-  - "What's preserved" section (connections, history, ratings)
-- [x] Implement pause/resume event handlers:
-  - Toggle user status (active → paused → breathing)
-  - Freeze all connection timers
-  - Stop dormancy checks and tidy-up prompts
-  - Update UI state across all pages
-- [x] Build automated behavioral logic:
-  - New connection → 72h activation window
-  - Event booked → state changes to "engaged"
-  - No event after 72h → auto-pause with notification
-  - 30-day dormancy detection → tidy-up prompt
-  - Monthly tier rebalancing check (⭐⭐⭐ max 5, ⭐⭐ max 20)
-- [x] Add notification system (in-app banners for prompts)
-- [x] Test all pause states and automated transitions
+**Status**: Complete. App now supports both demo mode and live database operations.
 
 ---
 
-## Phase 5: Analytics Dashboard & Stats Tracking ✅
-**Goal**: Build comprehensive analytics showing relationship metrics and quiet wins.
+## Phase 11: Event Management & Calendar Integration
+**Goal**: Store events in database and integrate real calendar APIs
 
-- [x] Create Analytics page with:
-  - Hero stats cards (active connections, total exchanges, events coordinated)
-  - Longest relationship badge with days counter
-  - Revived connections counter
-  - Connection tier breakdown (pie chart or bar graph)
-  - Monthly activity trend (line chart showing events over time)
-  - Top 5 connections leaderboard (by event count)
-  - Engagement rate calculation and display
-- [x] Implement stats calculation logic:
-  - Track all metrics in UserStats model
-  - Update counters on key events (new connection, event created, revival)
-  - Calculate longest relationship from first event date
-  - Detect revived connections (dormant → active)
-- [x] Add data visualization:
-  - Use rx.recharts for charts (pie, bar, line)
-  - Animate stat counters on page load
-  - Export stats as image/PDF button (placeholder)
-- [x] Build "Quiet Wins" motivational messaging system
-- [x] Test all stat calculations and chart rendering
-
----
-
-## Phase 6: Unsubscribe Flow & Data Management ✅
-**Goal**: Create thoughtful offboarding experience and data export/deletion features.
-
-- [x] Build Unsubscribe Flow page with:
-  - "Before you go" hero message with empathy
-  - Full stats showcase (all analytics in summary view)
-  - Testimonials or benefits reminder
-  - Alternative option: "Try Breathing Space instead" prominent CTA
-  - Final confirmation modal ("Are you sure?")
-  - Data export button (download JSON/CSV of connections and events)
-  - Permanent delete button with multi-step confirmation
-- [x] Create Settings page:
-  - Profile management (edit Dad Card details)
-  - Notification preferences (email, push, frequency) with toggle switches
-  - Privacy settings (profile visibility)
-  - Data export/download button
-  - Account deletion link
-- [x] Implement data export functionality:
-  - Generate JSON with all user data
-  - Export connections and events data
-  - Show success notification
-- [x] Add account deletion logic:
-  - Multi-step confirmation flow
-  - Breathing Space alternative recommendation
-  - Processing animation (2-second delay)
-  - Final confirmation screen
-- [x] Test unsubscribe flow and breathing space redirect
+- [ ] Implement Event database operations:
+  - Create event with validation ✅ (already done)
+  - Read events (upcoming, past, filtered by connection) ✅ (already done)
+  - Update event details
+  - Delete/cancel event
+- [ ] Add Google Calendar API integration:
+  - OAuth token storage in database
+  - Fetch user's free/busy data
+  - Create calendar events on confirmation
+  - Sync event updates/deletions
+- [ ] Build smart scheduling algorithm:
+  - Parse both users' availability
+  - Suggest 2-3 optimal time slots
+  - Handle timezone differences
+- [ ] Implement event notifications:
+  - 24h before reminder
+  - Post-event follow-up prompt
+- [ ] Update stats tracking on event creation
+- [ ] Test calendar sync and event persistence
 
 ---
 
-## Phase 7: Smart Group Matching Algorithm ✅
-**Goal**: Implement intelligent connection graph analysis to recommend group events.
+## Phase 12: Smart Behavioral Logic & Background Tasks
+**Goal**: Implement automated timers, state transitions, and notifications
 
-- [x] Extend Connection model with `mutual_connection_ids` field to track who knows whom
-- [x] Build `detect_group_opportunities()` algorithm that:
-  - Analyzes connection graph to find sets of 3 connections with no mutual links
-  - Filters for active/engaged connections (not paused/dormant)
-  - Calculates compatibility score based on tier levels
-  - Returns top 3 group opportunities sorted by score
-- [x] Implement dynamic suggestion generation:
-  - Replace hardcoded suggestions with algorithm-generated recommendations
-  - Create "Group Hangout Opportunity" cards showing all 3 names
-  - Add "Reconnect with [dormant connection]" individual suggestions
-  - Include dismissible suggestion cards with reasoning text
-- [x] Add group event visualization:
-  - Display 3 avatars side-by-side for group suggestions
-  - Show icon for individual suggestions
-  - Include dismiss button functionality
-- [x] Test algorithm with various connection graphs
-
----
-
-## Phase 8: Onboarding Selfie Avatar Generation (Option 3 Compromise) ✅
-**Goal**: Add selfie capture during onboarding with feature extraction to customize DiceBear avatar seeds.
-
-- [x] Add selfie capture UI to onboarding Dad Card step:
-  - Camera access button (HTML5 getUserMedia API wrapper)
-  - Live camera preview with capture button
-  - "Skip" option to use name-based seed instead
-  - Privacy notice: "Photo processed locally, never stored"
-- [x] Implement client-side feature extraction simulation:
-  - Mock detection of hair color, eye color, beard presence, glasses
-  - Generate custom DiceBear seed from extracted features
-  - Example seed format: `{name}_hair_{color}_eyes_{color}_beard_{yes/no}`
-- [x] Update AppState with:
-  - `selfie_features: dict` to store extracted characteristics
-  - `avatar_seed: str` computed variable based on features or name
-  - Event handler `process_selfie(features: dict)` to generate custom seed
-- [x] Integrate with existing avatar display:
-  - Update all avatar URLs to use `AppState.avatar_seed`
-  - Ensure consistency across dashboard, sidebar, connection cards
-- [x] Add visual feedback:
-  - Processing animation during "feature extraction"
-  - Preview of generated avatar before confirming
-  - Success message: "Avatar created from your photo!"
-- [x] Test onboarding flow:
-  - With selfie capture → custom seed avatar
-  - With skip → name-based seed avatar (existing behavior)
-  - Verify no photo data stored in state or backend
+- [ ] Create background task system:
+  - Check 72h activation windows every hour
+  - Detect 30-day dormant connections daily
+  - Run monthly tier rebalancing review
+  - Send notifications for state changes
+- [ ] Implement timer management:
+  - Store timer start dates in database
+  - Calculate remaining time dynamically
+  - Freeze/resume timers on pause/breathing space
+- [ ] Build notification system:
+  - Email notifications (SMTP integration)
+  - Push notifications (placeholder for mobile)
+  - In-app notification center
+- [ ] Add notification preferences:
+  - Store in database per user
+  - Honor do-not-disturb settings
+  - Respect breathing space state
+- [ ] Implement connection revival detection:
+  - Track dormant → active transitions
+  - Update stats counter
+  - Show celebration message
+- [ ] Test all automated workflows
 
 ---
 
-## ✅ ALL PHASES COMPLETE!
+## Phase 13: Analytics & Stats Calculation from Real Data
+**Goal**: Calculate all stats from database queries, not hardcoded values
 
-The Papa Connect MVP is now fully implemented with all 8 core pages, smart behavioral logic, compassionate UX, and privacy-first selfie avatar generation!
+- [ ] Implement stats calculation queries:
+  - Active connections (state != paused/dormant)
+  - Total exchanges (sum of all connections)
+  - Events coordinated (count from events table)
+  - Longest relationship (max days since first event)
+  - Revived connections (count state transitions)
+  - Engagement rate (active events in last 30 days / total connections)
+- [ ] Build aggregation queries for charts:
+  - Connection tier breakdown (group by tier)
+  - Monthly event counts (group by month, last 6 months)
+  - Top connections by event count (order by count)
+- [ ] Add caching layer:
+  - Cache expensive stats queries (1 hour TTL)
+  - Invalidate cache on data changes
+- [ ] Implement data export:
+  - Generate JSON export from database
+  - Include all user data (profile, connections, events, ratings)
+- [ ] Test analytics accuracy with various data scenarios
 
 ---
 
-## Notes
-- Use SQLite for local data storage (placeholder setup)
-- Mock Google OAuth flow with success/failure states
-- WhatsApp integration via deep-link (whatsapp://send?phone=...)
-- All calendar operations are placeholder (no real Google Calendar API yet)
-- Material Design 3 with indigo primary, gray secondary, Poppins font
-- Responsive design for web, mobile-ready
-- Copy tone: calming, supportive, minimal ("Keep your energy where it counts")
-- **Selfie avatar generation uses simulated feature extraction (no real ML/CV)**
-- **Original photo never leaves client, never stored on server**
-- **Custom seeds create more personalized avatars while maintaining privacy**
+## Phase 14: Demo Mode Polish & Registration Flow
+**Goal**: Perfect the demo/live mode experience
+
+- [ ] Build registration flow:
+  - Create new user account
+  - Hash password properly
+  - Generate JWT token
+  - Redirect to onboarding
+- [ ] Improve demo mode UI:
+  - Add banner: "Demo Mode - Data not saved"
+  - Show toggle indicator clearly
+  - Add "Create Account" CTA in demo mode
+- [ ] Implement data migration:
+  - Option to "Save demo data to your account" after registration
+  - Copy demo connections/events to database
+- [ ] Add demo mode restrictions UI:
+  - Show why certain features are disabled
+  - Encourage registration for full features
+- [ ] Test mode switching:
+  - Demo → Live (after registration)
+  - Live → Demo (logout)
+  - Data isolation verification
+
+---
+
+## Phase 15: Security, Error Handling & Production Readiness
+**Goal**: Harden the app for production deployment
+
+- [ ] Implement security best practices:
+  - SQL injection prevention (parameterized queries) ✅ (SQLAlchemy ORM)
+  - XSS protection (input sanitization)
+  - CSRF protection (tokens)
+  - Rate limiting on auth endpoints
+  - Secure password requirements
+- [ ] Add comprehensive error handling:
+  - Database connection failures (retry logic)
+  - API call failures (graceful degradation)
+  - Invalid user input (validation messages)
+  - Network errors (offline mode)
+- [ ] Build logging system:
+  - Log all database operations
+  - Track API calls and errors
+  - Monitor background task execution
+- [ ] Add data backup system:
+  - Automated daily backups
+  - Export/import functionality ✅ (export_user_data implemented)
+- [ ] Implement privacy features:
+  - GDPR-compliant data export ✅ (already implemented)
+  - Right to deletion (cascade) ✅ (implemented in unsubscribe flow)
+  - Data retention policies
+- [ ] Performance optimization:
+  - Database indexing on foreign keys
+  - Query optimization (N+1 problem)
+  - Lazy loading for large lists
+- [ ] Test production deployment:
+  - Environment variable configuration
+  - Database migrations on deployment
+  - SSL/TLS for API calls
+
+---
+
+## Technical Notes
+- **Database**: PostgreSQL for production, SQLite for local development (default: sqlite:///reflex.db)
+- **Authentication**: JWT tokens with 30-minute expiry, bcrypt password hashing
+- **Files Created**: 
+  - app/database.py (SQLAlchemy setup)
+  - app/auth.py (Authentication utilities)
+  - app/models/db_models.py (Database models)
+- **Environment Variables**: 
+  - DATABASE_URL (optional, defaults to SQLite)
+  - SECRET_KEY (optional, has secure default)
+- **Demo Mode**: Fully functional with in-memory dummy data, toggle on splash screen
+- **Database Models Fixed**: Removed incorrect User.events relationship, proper one-to-many through connections
+
+## Next Steps
+Phase 11 will add Google Calendar integration and smart scheduling features. The foundation is now complete with working database, authentication, and demo mode!

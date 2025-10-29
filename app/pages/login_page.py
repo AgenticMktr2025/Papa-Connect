@@ -92,6 +92,23 @@ def splash_page() -> rx.Component:
                 ),
                 class_name="text-center text-sm text-slate-300 mt-6",
             ),
+            rx.el.div(
+                rx.el.label("Demo Mode", class_name="font-medium text-slate-300"),
+                rx.el.button(
+                    rx.el.span(
+                        class_name=rx.cond(
+                            AppState.demo_mode, "translate-x-5", "translate-x-0"
+                        )
+                        + " pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition-transform duration-200 ease-in-out"
+                    ),
+                    on_click=AppState.toggle_demo_mode,
+                    class_name=rx.cond(
+                        AppState.demo_mode, "bg-orange-600", "bg-slate-600"
+                    )
+                    + " relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-slate-800",
+                ),
+                class_name="flex items-center justify-between mt-6 pt-6 border-t border-slate-700",
+            ),
             class_name="relative z-20 w-full max-w-sm p-8 bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-slate-700",
         ),
         class_name="relative flex items-center justify-center min-h-screen bg-slate-900 font-['Poppins'] p-4 overflow-hidden",

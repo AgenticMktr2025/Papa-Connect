@@ -145,7 +145,8 @@ class AppState(rx.State):
     qr_code_url: str = ""
     is_scanning_qr: bool = False
     is_loaded: bool = False
-    is_authenticated: bool = False
+    is_authenticated: bool = rx.LocalStorage(False, name="is_authenticated")
+    token: str = rx.LocalStorage("", name="token")
     selfie_features: dict[str, str] = {}
     capture_selfie_mode: bool = False
     is_processing_selfie: bool = False
@@ -155,6 +156,7 @@ class AppState(rx.State):
     faq_open_state: dict[str, bool] = {}
     show_signup: bool = False
     login_error: str = ""
+    demo_mode: bool = True
     splash_video_urls: list[str] = [
         "https://drive.google.com/uc?export=download&id=12ch8dyOirz5hSQtyNPFMkoPdWcTsYVqM",
         "https://drive.google.com/uc?export=download&id=1nRXbJILsiv5PQGd79f-de2t-weFM5eWz",
@@ -178,31 +180,107 @@ class AppState(rx.State):
 
     @rx.event
     async def on_load(self):
-        """Simulate checking auth and loading data."""
-        await asyncio.sleep(1)
+        """Check auth and load data."""
+        from app.auth import verify_token
+        from app.database import get_db, init_db
+        from app.models.db_models import (
+            User,
+            Connection as DBConnection,
+            Event as DBEvent,
+        )
+
+        init_db()
+        if not self.token:
+            self.is_authenticated = False
+            self.is_loaded = True
+            self._load_faqs()
+            return
+        user_id = verify_token(self.token)
+        if not user_id:
+            self.is_authenticated = False
+            self.is_loaded = True
+            self.token = ""
+            self._load_faqs()
+            return
+        self.is_authenticated = True
+        with get_db() as db:
+            db_user = db.query(User).filter(User.id == user_id).first()
+            if db_user:
+                self.user = UserProfile(
+                    id=db_user.id,
+                    name=db_user.name,
+                    email=db_user.email,
+                    phone=db_user.phone,
+                    status=db_user.status.value,
+                    avatar_seed=db_user.avatar_seed or db_user.name,
+                )
+                db_connections = (
+                    db.query(DBConnection)
+                    .filter(DBConnection.owner_id == user_id)
+                    .all()
+                )
+                self.connections = [
+                    Connection(
+                        id=c.id,
+                        peer_name=c.peer_name,
+                        email=c.email,
+                        tier=c.tier,
+                        state=c.state.value,
+                        last_event_date=c.last_event_date or "N/A",
+                        avatar_url=c.avatar_url,
+                    )
+                    for c in db_connections
+                ]
+                db_events = (
+                    db.query(DBEvent)
+                    .join(DBConnection)
+                    .filter(DBConnection.owner_id == user_id)
+                    .all()
+                )
+                self.events = [
+                    Event(
+                        id=e.id,
+                        title=e.title,
+                        date=e.date,
+                        time=e.time,
+                        location=e.location,
+                        connection_id=e.connection_id,
+                    )
+                    for e in db_events
+                ]
         self.is_loaded = True
-        if self.is_authenticated:
-            return rx.redirect("/home")
         self._load_faqs()
+        if self.router.page.path == "/":
+            return rx.redirect("/home")
 
     @rx.event
     async def login(self, form_data: dict):
         """Login the user."""
+        from app.auth import verify_password, create_access_token
+        from app.database import get_db
+        from app.models.db_models import User
+
         self.login_error = ""
-        await asyncio.sleep(1)
-        if (
-            form_data["email"] == "user@example.com"
-            and form_data["password"] == "password"
-        ):
+        if self.demo_mode:
             self.is_authenticated = True
             return rx.redirect("/home")
-        else:
-            self.login_error = "Invalid email or password."
+        with get_db() as db:
+            user = db.query(User).filter(User.email == form_data["email"]).first()
+        if not user or not verify_password(form_data["password"], user.password_hash):
+            self.login_error = "Incorrect email or password"
+            return
+        self.token = create_access_token(user_id=user.id)
+        self.is_authenticated = True
+        return AppState.on_load
 
     @rx.event
     def toggle_signup(self):
         self.show_signup = not self.show_signup
         self.login_error = ""
+
+    @rx.event
+    def toggle_demo_mode(self):
+        self.demo_mode = not self.demo_mode
 
     @rx.event
     def toggle_faq(self, index: int):
@@ -216,7 +294,12 @@ class AppState(rx.State):
 
     @rx.event
     def logout(self):
-        pass
+        self.is_authenticated = False
+        self.token = ""
+        self.user = UserProfile(
+            id=0, name="", email="", status="active", avatar_seed=""
+        )
+        return rx.redirect("/")
 
     @rx.event
     def update_profile(self, form_data: dict):
