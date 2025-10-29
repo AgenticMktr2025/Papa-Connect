@@ -376,31 +376,6 @@ def dashboard_page() -> rx.Component:
                 ),
                 rx.el.div(
                     rx.el.h2(
-                        "Smart Suggestions",
-                        class_name="text-2xl font-bold text-slate-900 mb-4",
-                    ),
-                    rx.cond(
-                        AppState.suggestions.length() > 0,
-                        rx.el.div(
-                            rx.foreach(AppState.suggestions, suggestion_card),
-                            class_name="grid md:grid-cols-2 gap-4",
-                        ),
-                        rx.el.div(
-                            rx.icon(
-                                "sparkles",
-                                class_name="h-8 w-8 text-slate-400 mx-auto mb-2",
-                            ),
-                            rx.el.p(
-                                "No new suggestions right now.",
-                                class_name="text-center text-slate-500",
-                            ),
-                            class_name="text-center p-8 bg-slate-100/50 rounded-lg border border-dashed",
-                        ),
-                    ),
-                    class_name="lg:col-span-2",
-                ),
-                rx.el.div(
-                    rx.el.h2(
                         "Top Connections",
                         class_name="text-2xl font-bold text-slate-900 mb-4",
                     ),
@@ -427,6 +402,31 @@ def dashboard_page() -> rx.Component:
                                 class_name="mt-2 text-sm font-semibold text-orange-600 hover:underline",
                             ),
                             class_name="text-center flex flex-col items-center p-8 bg-slate-100/50 rounded-lg border border-dashed",
+                        ),
+                    ),
+                    class_name="lg:col-span-2",
+                ),
+                rx.el.div(
+                    rx.el.h2(
+                        "Smart Suggestions",
+                        class_name="text-2xl font-bold text-slate-900 mb-4",
+                    ),
+                    rx.cond(
+                        AppState.suggestions.length() > 0,
+                        rx.el.div(
+                            rx.foreach(AppState.suggestions, suggestion_card),
+                            class_name="grid md:grid-cols-2 gap-4",
+                        ),
+                        rx.el.div(
+                            rx.icon(
+                                "sparkles",
+                                class_name="h-8 w-8 text-slate-400 mx-auto mb-2",
+                            ),
+                            rx.el.p(
+                                "No new suggestions right now.",
+                                class_name="text-center text-slate-500",
+                            ),
+                            class_name="text-center p-8 bg-slate-100/50 rounded-lg border border-dashed",
                         ),
                     ),
                     class_name="lg:col-start-3 lg:row-start-2",
