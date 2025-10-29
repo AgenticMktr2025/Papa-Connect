@@ -190,7 +190,7 @@ class AppState(rx.State):
         )
 
         init_db()
-        clerk_user_state = await self.get_state(clerk.ClerkUserState)
+        clerk_user_state = await self.get_state(clerk.ClerkState)
         if not clerk_user_state.user_id:
             self.is_authenticated = False
             self.is_loaded = True
