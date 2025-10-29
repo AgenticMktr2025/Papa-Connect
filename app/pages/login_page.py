@@ -24,7 +24,7 @@ def splash_page() -> rx.Component:
     return rx.el.div(
         collage_background(),
         rx.el.div(
-            class_name="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"
+            class_name="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent"
         ),
         rx.el.div(
             rx.el.h1(
