@@ -2,7 +2,7 @@ import reflex as rx
 import reflex_clerk_api as clerk
 import os
 from app.state.state import AppState
-from app.pages.dashboard import dashboard_page
+from app.pages.demo_page import demo_page
 from app.pages.onboarding import onboarding_page
 from app.pages.add_contact import add_contact_page
 from app.pages.connection_detail import connection_detail_page
@@ -26,21 +26,13 @@ def index() -> rx.Component:
         ),
         clerk.clerk_loaded(
             clerk.signed_out(splash_page()),
-            clerk.signed_in(
-                rx.el.div(
-                    dashboard_page(),
-                    class_name="min-h-screen w-full bg-cool-gray-50 font-['Poppins']",
-                )
-            ),
+            clerk.signed_in(rx.el.div(demo_page(), class_name="font-['Poppins']")),
         ),
     )
 
 
 def home() -> rx.Component:
-    return rx.el.div(
-        dashboard_page(),
-        class_name="min-h-screen w-full bg-cool-gray-50 font-['Poppins']",
-    )
+    return rx.el.div(demo_page(), class_name="font-['Poppins']")
 
 
 def settings() -> rx.Component:

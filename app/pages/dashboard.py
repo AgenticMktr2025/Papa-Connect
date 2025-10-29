@@ -58,26 +58,27 @@ def user_menu_dropdown() -> rx.Component:
 
 
 def dashboard_header() -> rx.Component:
-    return rx.el.header(
+    return rx.el.div(
         rx.el.div(
             rx.el.h1(
                 f"Welcome back, {AppState.user.name}!",
                 class_name="text-3xl font-bold text-slate-900",
             ),
             rx.el.p(AppState.current_date, class_name="text-slate-500 font-semibold"),
+            class_name="hidden md:block",
         ),
         rx.el.div(
             rx.el.button(
                 rx.el.image(
                     src=AppState.user_avatar_url,
-                    class_name="h-16 w-16 rounded-full border-2 border-white shadow-md",
+                    class_name="h-12 w-12 rounded-full border-2 border-white shadow-md",
                 ),
                 on_click=AppState.toggle_dropdown,
             ),
             rx.cond(AppState.dropdown_open, user_menu_dropdown(), None),
             class_name="relative",
         ),
-        class_name="flex items-center justify-between z-10 relative",
+        class_name="flex items-center justify-between",
     )
 
 
@@ -263,7 +264,7 @@ def next_event_widget() -> rx.Component:
                         class_name="text-4xl font-bold text-orange-600 animate-pulse"
                     ),
                     rx.moment(
-                        AppState.next_event.date + "T" + AppState.next_event.time,
+                        AppState.next_event_iso_datetime,
                         from_now=True,
                         class_name="text-4xl font-bold text-orange-600 animate-pulse",
                     ),
@@ -341,64 +342,103 @@ def dashboard_page() -> rx.Component:
             quick_actions(),
             rx.el.div(
                 rx.el.div(
-                    rx.el.h2(
-                        "Upcoming Events",
-                        class_name="text-2xl font-bold text-slate-900 mb-4",
-                    ),
-                    rx.el.div(
-                        rx.foreach(AppState.upcoming_events, upcoming_event_card),
-                        class_name="flex flex-col gap-4",
-                    ),
-                    rx.el.h2(
-                        "Smart Suggestions",
-                        class_name="text-2xl font-bold text-slate-900 mt-8 mb-4",
-                    ),
-                    rx.el.p(
-                        "Keep your energy where it counts. Here are some ideas:",
-                        class_name="text-slate-500 mb-4",
-                    ),
-                    rx.el.div(
-                        rx.cond(
-                            AppState.suggestions.length() > 0,
-                            rx.el.div(
-                                rx.foreach(AppState.suggestions, suggestion_card),
-                                class_name="flex flex-col gap-4",
-                            ),
-                            rx.el.div(
-                                rx.icon(
-                                    "sparkles",
-                                    class_name="h-8 w-8 text-slate-400 mx-auto mb-2",
-                                ),
-                                rx.el.p(
-                                    "No new suggestions right now.",
-                                    class_name="text-center text-slate-500",
-                                ),
-                                class_name="text-center p-8 bg-slate-100/50 rounded-lg border border-dashed",
-                            ),
-                        ),
-                        class_name="flex flex-col gap-4",
-                    ),
-                    class_name="w-full lg:w-2/3",
-                ),
-                rx.el.div(
                     next_event_widget(),
                     rx.el.div(
                         rx.el.h2(
                             "Top Connections",
                             class_name="text-2xl font-bold text-slate-900 mb-4",
                         ),
-                        rx.el.div(
-                            rx.foreach(
-                                AppState.top_connections_by_events, top_connection_card
+                        rx.cond(
+                            AppState.top_connections_by_events.length() > 0,
+                            rx.el.div(
+                                rx.foreach(
+                                    AppState.top_connections_by_events,
+                                    top_connection_card,
+                                ),
+                                class_name="flex flex-col gap-4",
                             ),
-                            class_name="flex flex-col gap-4",
+                            rx.el.div(
+                                rx.icon(
+                                    "users",
+                                    class_name="h-8 w-8 text-slate-400 mx-auto mb-2",
+                                ),
+                                rx.el.p(
+                                    "No connections yet.",
+                                    class_name="text-center text-slate-500",
+                                ),
+                                rx.el.a(
+                                    "Add your first contact",
+                                    href="/add-contact",
+                                    class_name="mt-2 text-sm font-semibold text-orange-600 hover:underline",
+                                ),
+                                class_name="text-center flex flex-col items-center p-8 bg-slate-100/50 rounded-lg border border-dashed",
+                            ),
                         ),
                     ),
-                    class_name="w-full lg:w-1/3 flex flex-col gap-8",
+                    class_name="lg:col-start-3 lg:col-end-4 row-start-1 row-end-3 space-y-8",
                 ),
-                class_name="mt-8 flex flex-col lg:flex-row gap-8",
+                rx.el.div(
+                    rx.el.h2(
+                        "Upcoming Events",
+                        class_name="text-2xl font-bold text-slate-900 mb-4",
+                    ),
+                    rx.cond(
+                        AppState.upcoming_events.length() > 0,
+                        rx.el.div(
+                            rx.foreach(AppState.upcoming_events, upcoming_event_card),
+                            class_name="flex flex-col gap-4",
+                        ),
+                        rx.el.div(
+                            rx.icon(
+                                "calendar-check",
+                                class_name="h-8 w-8 text-slate-400 mx-auto mb-2",
+                            ),
+                            rx.el.p(
+                                "No upcoming events. Time to plan!",
+                                class_name="text-center text-slate-500",
+                            ),
+                            rx.el.a(
+                                "Plan an Event",
+                                href="/event-planner",
+                                class_name="mt-2 text-sm font-semibold text-orange-600 hover:underline",
+                            ),
+                            class_name="text-center flex flex-col items-center p-8 bg-slate-100/50 rounded-lg border border-dashed",
+                        ),
+                    ),
+                    class_name="lg:col-span-2",
+                ),
+                rx.el.div(
+                    rx.el.h2(
+                        "Smart Suggestions",
+                        class_name="text-2xl font-bold text-slate-900 mb-4",
+                    ),
+                    rx.el.p(
+                        "Keep your energy where it counts. Here are some ideas:",
+                        class_name="text-slate-500 mb-4",
+                    ),
+                    rx.cond(
+                        AppState.suggestions.length() > 0,
+                        rx.el.div(
+                            rx.foreach(AppState.suggestions, suggestion_card),
+                            class_name="flex flex-col gap-4",
+                        ),
+                        rx.el.div(
+                            rx.icon(
+                                "sparkles",
+                                class_name="h-8 w-8 text-slate-400 mx-auto mb-2",
+                            ),
+                            rx.el.p(
+                                "No new suggestions right now.",
+                                class_name="text-center text-slate-500",
+                            ),
+                            class_name="text-center p-8 bg-slate-100/50 rounded-lg border border-dashed",
+                        ),
+                    ),
+                    class_name="lg:col-span-2",
+                ),
+                class_name="mt-8 grid grid-cols-1 lg:grid-cols-[repeat(2,minmax(0,1fr))_320px] gap-8 items-start",
             ),
-            class_name="max-w-7xl mx-auto",
+            class_name="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8",
         ),
-        class_name="p-6 sm:p-8 flex-1 overflow-y-auto bg-cool-gray-50",
+        class_name="flex-1 overflow-y-auto bg-cool-gray-50",
     )

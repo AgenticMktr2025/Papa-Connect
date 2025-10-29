@@ -70,7 +70,7 @@ class AppState(rx.State):
         Event(
             id=1,
             title="Park Hangout",
-            date="2024-07-28",
+            date="2025-10-30",
             time="10:00 AM",
             location="Greenleaf Park",
             connection_id=1,
@@ -78,7 +78,7 @@ class AppState(rx.State):
         Event(
             id=2,
             title="Coffee & Crawlers",
-            date="2024-08-03",
+            date="2025-11-05",
             time="9:00 AM",
             location="The Daily Grind",
             connection_id=2,
@@ -156,7 +156,7 @@ class AppState(rx.State):
     faq_open_state: dict[str, bool] = {}
     show_signup: bool = False
     login_error: str = ""
-    demo_mode: bool = True
+    demo_mode: bool = False
     splash_video_urls: list[str] = [
         "https://drive.google.com/uc?export=download&id=12ch8dyOirz5hSQtyNPFMkoPdWcTsYVqM",
         "https://drive.google.com/uc?export=download&id=1nRXbJILsiv5PQGd79f-de2t-weFM5eWz",
@@ -165,6 +165,7 @@ class AppState(rx.State):
         "https://drive.google.com/uc?export=download&id=1wUWwbTGqY7s0HMxEmzieDC3gmWVGPEwy",
     ]
     current_video_index: int = 0
+    mobile_sidebar_open: bool = False
 
     @rx.var
     def current_video_url(self) -> str:
@@ -247,6 +248,10 @@ class AppState(rx.State):
         self._load_faqs()
         if self.router.page.path == "/":
             return rx.redirect("/home")
+
+    @rx.event
+    def toggle_mobile_sidebar(self):
+        self.mobile_sidebar_open = not self.mobile_sidebar_open
 
     @rx.event
     async def login(self, form_data: dict):
@@ -639,6 +644,22 @@ class AppState(rx.State):
         if self.upcoming_events:
             return self.upcoming_events[0]
         return None
+
+    @rx.var
+    def next_event_iso_datetime(self) -> str:
+        if self.next_event:
+            try:
+                dt_obj = datetime.datetime.strptime(
+                    f"{self.next_event.date} {self.next_event.time}",
+                    "%Y-%m-%d %I:%M %p",
+                )
+                return dt_obj.isoformat()
+            except (ValueError, TypeError) as e:
+                import logging
+
+                logging.exception(f"Error parsing next event datetime: {e}")
+                return ""
+        return ""
 
     @rx.var
     def past_events(self) -> list[Event]:
