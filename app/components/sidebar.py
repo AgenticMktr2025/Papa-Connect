@@ -39,17 +39,14 @@ def sidebar() -> rx.Component:
                         href="/home",
                         class_name="flex items-center gap-2 text-lg font-semibold",
                     ),
-                    rx.el.button(
-                        rx.icon(
-                            rx.cond(
-                                AppState.sidebar_collapsed,
-                                "panel-right-close",
-                                "panel-left-close",
-                            ),
-                            class_name="h-6 w-6",
+                    rx.cond(
+                        AppState.sidebar_collapsed,
+                        None,
+                        rx.el.button(
+                            rx.icon("panel-left-close", class_name="h-6 w-6"),
+                            on_click=AppState.toggle_sidebar,
+                            class_name="p-1 rounded-md hover:bg-slate-200",
                         ),
-                        on_click=AppState.toggle_sidebar,
-                        class_name="p-1 rounded-md hover:bg-slate-200",
                     ),
                     class_name=rx.cond(
                         AppState.sidebar_collapsed,
@@ -62,6 +59,18 @@ def sidebar() -> rx.Component:
                     class_name="flex flex-col gap-2 p-4 text-sm font-medium",
                 ),
                 class_name="flex-1 overflow-y-auto",
+            ),
+            rx.cond(
+                AppState.sidebar_collapsed,
+                rx.el.div(
+                    rx.el.button(
+                        rx.icon("panel-right-close", class_name="h-6 w-6"),
+                        on_click=AppState.toggle_sidebar,
+                        class_name="p-1 rounded-md hover:bg-slate-200",
+                    ),
+                    class_name="flex items-center justify-center p-4 border-t",
+                ),
+                None,
             ),
             rx.el.div(
                 rx.el.div(
