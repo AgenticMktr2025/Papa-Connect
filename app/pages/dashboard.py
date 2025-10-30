@@ -19,44 +19,6 @@ def status_indicator(status: rx.Var[str]) -> rx.Component:
     )
 
 
-def user_menu_dropdown() -> rx.Component:
-    return rx.el.div(
-        rx.el.div(
-            rx.foreach(
-                AppState.nav_items,
-                lambda item: rx.el.a(
-                    rx.icon(item["icon"], class_name="h-4 w-4 mr-3 text-slate-500"),
-                    item["label"],
-                    href=item["path"],
-                    class_name="flex items-center px-3 py-2 text-sm font-medium text-slate-700 rounded-md hover:bg-slate-100",
-                ),
-            ),
-            class_name="flex flex-col gap-1 p-2",
-        ),
-        rx.el.div(class_name="border-t border-slate-200 my-2"),
-        rx.el.div(
-            rx.el.a(
-                rx.icon("life-buoy", class_name="h-4 w-4 mr-3 text-slate-500"),
-                "Help & Support",
-                href="/help-support",
-                class_name="flex items-center px-3 py-2 text-sm font-medium text-slate-700 rounded-md hover:bg-slate-100",
-            ),
-            class_name="p-2",
-        ),
-        rx.el.div(class_name="border-t border-slate-200 my-2"),
-        rx.el.div(
-            rx.el.a(
-                rx.icon("log-out", class_name="h-4 w-4 mr-3 text-red-500"),
-                "Logout",
-                on_click=AppState.logout,
-                class_name="flex items-center px-3 py-2 text-sm font-medium text-red-600 rounded-md hover:bg-red-50 cursor-pointer",
-            ),
-            class_name="p-2",
-        ),
-        class_name="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border z-50",
-    )
-
-
 def dashboard_header() -> rx.Component:
     return rx.el.div(
         rx.el.div(
@@ -69,13 +31,10 @@ def dashboard_header() -> rx.Component:
         ),
         rx.el.div(
             rx.el.button(
-                rx.el.image(
-                    src=AppState.user_avatar_url,
-                    class_name="h-12 w-12 rounded-full border-2 border-white shadow-md",
-                ),
-                on_click=AppState.toggle_dropdown,
+                rx.icon("panel-left-close", class_name="h-6 w-6"),
+                on_click=AppState.toggle_sidebar,
+                class_name="p-1 rounded-md hover:bg-slate-200 md:hidden",
             ),
-            rx.cond(AppState.dropdown_open, user_menu_dropdown(), None),
             class_name="relative",
         ),
         class_name="flex items-center justify-between",

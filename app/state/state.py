@@ -122,6 +122,7 @@ class AppState(rx.State):
         },
         {"label": "Analytics", "icon": "bar-chart-2", "path": "/analytics"},
         {"label": "Settings", "icon": "settings", "path": "/settings"},
+        {"label": "Help & Support", "icon": "life-buoy", "path": "/help-support"},
     ]
     faqs: list[dict[str, str]] = [
         {
@@ -299,8 +300,9 @@ class AppState(rx.State):
         self.faq_open_state[key] = not self.faq_open_state.get(key, False)
 
     @rx.event
-    def toggle_dropdown(self):
-        self.dropdown_open = not self.dropdown_open
+    def logout(self):
+        self.dropdown_open = False
+        return clerk.sign_out()
 
     @rx.event
     def logout(self):

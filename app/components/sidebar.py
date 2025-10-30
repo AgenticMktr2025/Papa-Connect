@@ -27,8 +27,9 @@ def sidebar() -> rx.Component:
             rx.el.div(
                 rx.el.div(
                     rx.el.a(
-                        rx.icon(
-                            "circle-user-round", class_name="h-8 w-8 text-orange-600"
+                        rx.el.image(
+                            src=AppState.user_avatar_url,
+                            class_name="h-8 w-8 rounded-full border-2 border-white shadow-md",
                         ),
                         rx.cond(
                             AppState.sidebar_collapsed,
@@ -38,12 +39,20 @@ def sidebar() -> rx.Component:
                         href="/home",
                         class_name="flex items-center gap-2 text-lg font-semibold",
                     ),
-                    rx.el.button(
-                        rx.icon("panel-left-close", class_name="h-6 w-6"),
-                        on_click=AppState.toggle_sidebar,
-                        class_name="p-1 rounded-md hover:bg-slate-200",
+                    rx.cond(
+                        AppState.sidebar_collapsed,
+                        None,
+                        rx.el.button(
+                            rx.icon("panel-left-close", class_name="h-6 w-6"),
+                            on_click=AppState.toggle_sidebar,
+                            class_name="p-1 rounded-md hover:bg-slate-200",
+                        ),
                     ),
-                    class_name="flex items-center justify-between p-4 border-b",
+                    class_name=rx.cond(
+                        AppState.sidebar_collapsed,
+                        "flex items-center justify-center p-4 border-b",
+                        "flex items-center justify-between p-4 border-b",
+                    ),
                 ),
                 rx.el.nav(
                     rx.foreach(AppState.nav_items, nav_item),
