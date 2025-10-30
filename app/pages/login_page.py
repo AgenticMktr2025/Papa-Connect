@@ -3,29 +3,13 @@ import reflex_clerk_api as clerk
 from app.state.state import AppState
 
 
-def collage_background() -> rx.Component:
-    return rx.el.div(
-        rx.el.div(
-            rx.el.image(src="placeholder.svg", class_name="object-cover w-full h-full"),
-            rx.el.image(src="placeholder.svg", class_name="object-cover w-full h-full"),
-            class_name="grid grid-cols-2 w-full h-1/2 gap-2",
-        ),
-        rx.el.div(
-            rx.el.image(src="placeholder.svg", class_name="object-cover w-full h-full"),
-            rx.el.image(src="placeholder.svg", class_name="object-cover w-full h-full"),
-            rx.el.image(src="placeholder.svg", class_name="object-cover w-full h-full"),
-            class_name="grid grid-cols-3 w-full h-1/2 gap-2",
-        ),
-        class_name="absolute inset-0 w-full h-full flex flex-col gap-2 p-2 opacity-30",
-    )
-
-
 def splash_page() -> rx.Component:
     return rx.el.div(
-        collage_background(),
         rx.el.div(
-            class_name="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent"
+            class_name="absolute inset-0 bg-cover bg-center",
+            style={"backgroundImage": "url('/splash_background.png')"},
         ),
+        rx.el.div(class_name="absolute inset-0 bg-black/60"),
         rx.el.div(
             rx.el.h1(
                 "Papa Connect",
