@@ -49,7 +49,10 @@ def demo_page() -> rx.Component:
         rx.el.div(
             mobile_header(),
             dashboard_page(),
-            class_name="flex flex-col w-full min-h-screen",
+            class_name="flex flex-col w-full min-h-screen ml-auto",
+            width=rx.cond(
+                AppState.sidebar_collapsed, "calc(100% - 5rem)", "calc(100% - 16rem)"
+            ),
         ),
         rx.cond(AppState.mobile_sidebar_open, mobile_sidebar(), None),
         class_name="flex min-h-screen w-full",
