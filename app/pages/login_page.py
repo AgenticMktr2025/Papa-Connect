@@ -6,11 +6,6 @@ from app.state.state import AppState
 def splash_page() -> rx.Component:
     return rx.el.div(
         rx.el.div(
-            class_name="absolute inset-0 bg-cover bg-center",
-            style={"backgroundImage": "url('/papa-connect-background.png')"},
-        ),
-        rx.el.div(class_name="absolute inset-0 bg-black/60"),
-        rx.el.div(
             rx.el.h1(
                 "Papa Connect",
                 class_name="text-6xl font-bold text-white tracking-tighter",
