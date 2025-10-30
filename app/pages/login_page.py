@@ -7,7 +7,7 @@ def splash_page() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             class_name="absolute inset-0 bg-cover bg-center",
-            style={"backgroundImage": "url('/splash_background.png')"},
+            style={"backgroundImage": "url('/aries_symbol_curved.png')"},
         ),
         rx.el.div(class_name="absolute inset-0 bg-black/60"),
         rx.el.div(
