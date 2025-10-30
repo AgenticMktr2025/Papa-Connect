@@ -415,7 +415,7 @@ def dashboard_page() -> rx.Component:
                         AppState.suggestions.length() > 0,
                         rx.el.div(
                             rx.foreach(AppState.suggestions, suggestion_card),
-                            class_name="grid md:grid-cols-2 gap-4",
+                            class_name="flex flex-col gap-4",
                         ),
                         rx.el.div(
                             rx.icon(

@@ -65,6 +65,10 @@ def sidebar() -> rx.Component:
             ),
             class_name="flex h-full max-h-screen flex-col justify-between",
         ),
-        class_name="hidden border-r bg-slate-100/40 md:block transition-all duration-300",
+        class_name=rx.cond(
+            AppState.sidebar_collapsed,
+            "hidden border-r bg-slate-100/40 md:block transition-all duration-300",
+            "hidden border-r bg-slate-100/40 md:block transition-all duration-300 fixed h-screen",
+        ),
         width=rx.cond(AppState.sidebar_collapsed, "5rem", "16rem"),
     )
